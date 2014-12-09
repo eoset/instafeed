@@ -19,19 +19,22 @@ class instaLoop
 
 		if($result)
 		{
+			$id = 1;
+
 			foreach(json_decode($result)->data as $item)
 			{
 				$src = $item->images->standard_resolution->url;
 				$url = $item->link;
 				$caption = $item->caption->text;
-
+				
 				$images[] = array(
+					"id" => $id++,
 					"src" => htmlspecialchars($src),
 					"url" => htmlspecialchars($url),
 					"caption" => htmlspecialchars($caption)
 					);
 			}
-			
+
 			return $images;
 		}
 	}
@@ -39,6 +42,10 @@ class instaLoop
 
 $instaLoop = new instaLoop;
 $images = $instaLoop->run();
+
+$pageHeight = count($images)*604;
+echo $pageHeight;
+
 ?>
 <html>
 <head>
@@ -49,14 +56,16 @@ $images = $instaLoop->run();
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 
 	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
 </head>
 <body style="background-color: #000000;" onLoad="pageScroll()">
 	<div class="container-fluid">
 		<?php
 		foreach($images as $image)
 		{
-			echo "<img class='col-md-3' src=".$image['src']." />";
+			echo "<img name=".$image['id']." class='col-md-3' src=".$image['src']." />";
 			//echo "<div class='well well-sm'>".$image['caption']."</div>";
 		}
 
@@ -65,7 +74,7 @@ $images = $instaLoop->run();
 
 	<script>
 		function pageScroll() {
-	    window.scrollBy(0,1);
+	    window.scrollBy(<?php echo $pageHeight ?>,1);
 	    scrolldelay = setTimeout('pageScroll()',10);
 		}
 
