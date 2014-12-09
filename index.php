@@ -44,7 +44,6 @@ $instaLoop = new instaLoop;
 $images = $instaLoop->run();
 
 $pageHeight = count($images)*604;
-echo $pageHeight;
 
 ?>
 <html>
