@@ -32,7 +32,6 @@ class instaLoop
 					);
 			}
 			return $images;
-			die();
 		}
 	}
 }
