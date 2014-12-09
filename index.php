@@ -31,6 +31,7 @@ class instaLoop
 					"caption" => htmlspecialchars($caption)
 					);
 			}
+			
 			return $images;
 		}
 	}
