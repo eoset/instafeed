@@ -59,12 +59,12 @@ $pageHeight = count($images)*604;
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 </head>
-<body style="background-color: #000000;" onLoad="pageScroll()">
+<body style="background-color: #000000; overflow-y: hidden;" onLoad="pageScroll()">
 	<div class="container-fluid">
 		<?php
 		foreach($images as $image)
 		{
-			echo "<img name=".$image['id']." class='col-md-3' src=".$image['src']." />";
+			echo "<img name=".$image['id']." class='col-md-3' src=".$image['src']." style='padding-bottom: 15px; padding-top: 15px;'/>";
 			//echo "<div class='well well-sm'>".$image['caption']."</div>";
 		}
 
@@ -76,7 +76,6 @@ $pageHeight = count($images)*604;
 	    window.scrollBy(<?php echo $pageHeight ?>,1);
 	    scrolldelay = setTimeout('pageScroll()',10);
 		}
-
 
 		setTimeout(function(){
    		
