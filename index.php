@@ -1,51 +1,3 @@
-<?php
-
-class instaLoop
-{
-
-	public function run(){
-
-		$tag = 'visma';
-
-		$url="https://api.instagram.com/v1/tags/".$tag."/media/recent?client_id=f41890a186f648b68342b142def75708&count=50";
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_URL,$url);
-		$result=curl_exec($ch);
-		curl_close($ch);
-
-		$images = array();
-
-		if($result)
-		{
-			$id = 1;
-
-			foreach(json_decode($result)->data as $item)
-			{
-				$src = $item->images->standard_resolution->url;
-				$url = $item->link;
-				$caption = $item->caption->text;
-				
-				$images[] = array(
-					"id" => $id++,
-					"src" => htmlspecialchars($src),
-					"url" => htmlspecialchars($url),
-					"caption" => htmlspecialchars($caption)
-					);
-			}
-
-			return $images;
-		}
-	}
-}
-
-$instaLoop = new instaLoop;
-$images = $instaLoop->run();
-
-$pageHeight = count($images)*604;
-
-?>
 <html>
 <head>
 	<!-- Latest compiled and minified CSS -->
@@ -59,29 +11,86 @@ $pageHeight = count($images)*604;
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
 </head>
-<body style="background-color: #000000; overflow-y: hidden;" onLoad="pageScroll()">
+<body style="background-color: #000000; overflow-y: hidden;">
 	<div class="container-fluid">
-		<?php
-		foreach($images as $image)
-		{
-			echo "<img name=".$image['id']." class='col-md-3' src=".$image['src']." style='padding-bottom: 15px; padding-top: 15px;'/>";
-			//echo "<div class='well well-sm'>".$image['caption']."</div>";
-		}
-
-		?>
+		<!--Append images through script-->
 	</div>
 
 	<script>
-		function pageScroll() {
-	    window.scrollBy(<?php echo $pageHeight ?>,1);
-	    scrolldelay = setTimeout('pageScroll()',10);
+		var images = [];
+
+		$(document).ready(function(){
+			getImages();
+		});
+
+		function addImage(obj)
+		{
+			var html = "";
+			html += "<div class='col-md-3'>";
+			html += "<img name='"+obj.id+"' src='"+obj.src+"' style='padding-bottom: 15px; padding-top: 15px; width: 100%;'/>";
+			html += "<div style='position: relative; top: -32px; background-color: #000000; opacity: 0.5; color: #FFFFFF;'>@"+obj.username+"</div>";
+			html += "</div>";
+			$(".container-fluid").prepend(html);
 		}
 
-		setTimeout(function(){
-   		
-   		document.body.scrollTop = document.documentElement.scrollTop = 0;
-   		window.location.reload(1);
-		}, 60000);
+		function getImages()
+		{
+			$.ajax({
+				type: "POST",
+				url: "getImages.php",
+				data: {feed:"<?php echo $_GET['feed'] ?>"}
+			})
+			.done(function(data){
+				//console.log(JSON.parse(data));
+				var obj = JSON.parse(data);
+				for(var i = 0; i<obj.length; i++)
+				{
+					var exists = false;
+
+					for(var j = 0; j<images.length; j++)
+					{
+						if(obj[i].src == images[j].src)
+						{
+							exists = true;
+							break;
+						}
+					}
+
+					if(exists) continue;
+
+					images.push(obj[i]);
+					addImage(obj[i]);
+				}
+				setTimeout(pageScroll, 500);
+				$(".container-fluid").animate({
+						opacity: 1,
+					}, 2000);
+			});
+			
+		}
+
+		var scroll = 0;
+
+		function pageScroll() {
+			$(document).scrollTop($(document).scrollTop()+1);
+			var newScroll = $(document).scrollTop();
+			if(newScroll == scroll && scroll != 0)
+			{
+
+				$( ".container-fluid" ).animate({
+					opacity: 0,
+				}, 2000, function() {
+					$(document).scrollTop(0);
+					getImages();
+				});
+				
+			}
+			else
+			{
+				scroll = newScroll;
+				scrolldelay = setTimeout('pageScroll()',20);
+			}
+		}
 	</script>
 </body>
 </html>
