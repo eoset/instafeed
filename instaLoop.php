@@ -7,7 +7,7 @@ class instaLoop
 
 	public function run(){
 
-		$tag = $_POST["feed"];
+		$tag = $_POST["tag"];
 
 		$url="https://api.instagram.com/v1/tags/".$tag."/media/recent?client_id=f41890a186f648b68342b142def75708&count=50";
 		$ch = curl_init();

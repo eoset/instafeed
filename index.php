@@ -38,7 +38,7 @@
 			$.ajax({
 				type: "POST",
 				url: "getImages.php",
-				data: {feed:"<?php echo $_GET['feed'] ?>"}
+				data: {tag:"<?php echo $_GET['tag'] ?>"}
 			})
 			.done(function(data){
 				//console.log(JSON.parse(data));
