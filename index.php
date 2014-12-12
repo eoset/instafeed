@@ -27,8 +27,8 @@
 		{
 			var html = "";
 			html += "<div class='col-md-3'>";
-			html += "<img name='"+obj.id+"' src='"+obj.src+"' style='padding-bottom: 15px; padding-top: 15px; width: 100%;'/>";
-			html += "<div style='position: relative; top: -32px; background-color: #000000; opacity: 0.5; color: #FFFFFF;'>@"+obj.username+"</div>";
+			html += "<img name='"+obj.id+"' src='"+obj.src+"' style='padding-bottom: 15px; width: 100%;'/>";
+			html += "<div style='position: relative; top: -32px; background-color: #000000; opacity: 0.75; color: #FFFFFF;'>@"+obj.username+' ('+obj.fullname+')'+"</div>";
 			html += "</div>";
 			$(".container-fluid").prepend(html);
 		}
